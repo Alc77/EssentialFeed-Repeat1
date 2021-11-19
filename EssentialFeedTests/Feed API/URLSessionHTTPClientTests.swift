@@ -39,7 +39,7 @@ class URLSessionHTTPClientTests: XCTestCase {
         sut.get(from: url) { result in
             switch result {
             case let .failure(receivedError as NSError):
-                XCTAssertEqual(receivedError, error)
+                XCTAssertTrue(URLSessionHTTPClientTests.isSame(receivedError, to: error))
             default:
                 XCTFail("Expected failure with error \(error), got \(result) instead")
             }
@@ -52,6 +52,10 @@ class URLSessionHTTPClientTests: XCTestCase {
     }
     
     // MARK: - Helpers
+    
+    private static func isSame(_ error1: NSError, to error2: NSError) -> Bool {
+        return error1.domain == error2.domain && error1.code == error2.code
+    }
     
     private class URLProtocolStub: URLProtocol {
         private static var stubs = [URL: Stub]()
